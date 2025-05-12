@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Investičná kalkulačka</string>
+    <string name="label_starting_amount">Počiatočný vklad</string>
+    <string name="btn_calculate">Vypočítať</string>
+</resources>

@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Ivestment Aplication VAMZ</string>
+    <string name="app_name">Investment Calculator</string>
+    <string name="label_starting_amount">Starting Amount</string>
+    <string name="btn_calculate">Calculate</string>
 </resources>
