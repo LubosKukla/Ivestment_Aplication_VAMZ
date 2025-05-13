@@ -1,5 +1,53 @@
 <resources>
+    <!-- App name -->
     <string name="app_name">Investment Calculator</string>
+    <string name="header_investment">Investment</string>
+    <string name="header_calculator">Calculator</string>
+
+    <!-- Labels for input fields -->
     <string name="label_starting_amount">Starting Amount</string>
+    <string name="label_additional_contribution">Additional Contribution</string>
+    <string name="label_return_percent">Return %</string>
+    <string name="label_after_years">After (years)</string>
+    <string name="label_compound">Compound</string>
+
+    <!-- Dropdown options -->
+    <string name="option_yearly">Yearly</string>
+    <string name="option_monthly">Monthly</string>
+    <string name="option_semiannually">Semi-annual</string>
+    <string name="option_quarterly">Quarterly</string>
+    <string name="option_weekly">Weekly</string>
+    <string name="option_daily">Daily</string>
+
+    <!-- Buttons / toggles -->
     <string name="btn_calculate">Calculate</string>
+    <string name="btn_more_options">More options</string>
+    <string name="btn_less_options">Show less</string>
+
+    <string name="label_monte_carlo">Monte Carlo simulation</string>
+    <string name="label_inflation_clear">Inflation clear</string>
+    <string name="label_tax_fees">Tax fees</string>
+
+
+    <string name="placeholder_starting_amount">20 000$</string>
+    <string name="placeholder_additional_contribution">1 000$</string>
+    <string name="placeholder_return_percent" translatable="false">8%</string>
+    <string name="placeholder_after_years" translatable="false">10</string>
+
+    <string name="tooltip_monte_carlo">The Monte Carlo simulation is a method that uses random scenarios to predict how an investment might evolve over time. It accounts for market fluctuations and shows the range of possible gains or losses, helping to better understand the risks and potential of investing.</string>
+    <string name="tooltip_inflation_clear">Nominal returns minus inflation. Adds an option to set inflation (e.g., 2–4% annually), and also displays the adjusted real return.</string>
+    <string name="tooltip_tax_fees">In addition to the standard expected return, it also calculates the taxation rate on stocks.</string>
+
+    <string name="label_scene">Scene</string>
+    <string name="option_scene_realistic">Realistic</string>
+    <string name="option_scene_optimistic">Optimistic</string>
+    <string name="option_scene_pessimistic">Pessimistic</string>
+
+    <string name="label_inflation_percent">Inflation %</string>
+    <string name="placeholder_inflation_percent">3 %</string>
+
+    <string name="label_tax_percent">Tax %</string>
+    <string name="placeholder_tax_percent">3 %</string>
+
+
 </resources>

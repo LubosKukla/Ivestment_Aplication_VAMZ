@@ -1,6 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Názov aplikácie -->
     <string name="app_name">Investičná kalkulačka</string>
+    <string name="header_investment">Ivestičná</string>
+    <string name="header_calculator">Kalkulačka</string>
+
+    <!-- Štítky vstupných polí -->
     <string name="label_starting_amount">Počiatočný vklad</string>
+    <string name="label_additional_contribution">Pravidelný príspevok</string>
+    <string name="label_return_percent">Výnos %</string>
+    <string name="label_after_years">Po (rokoch)</string>
+    <string name="label_compound">Zloženie</string>
+
+    <!-- Možnosti dropdownu -->
+    <string name="option_yearly">Ročné</string>
+    <string name="option_monthly">Mesačné</string>
+    <string name="option_semiannually">Polročné</string>
+    <string name="option_quarterly">Kvartálne</string>
+    <string name="option_weekly">Týždenné</string>
+    <string name="option_daily">Denné</string>
+
+    <!-- Tlačidlá a prepínače -->
     <string name="btn_calculate">Vypočítať</string>
+    <string name="btn_more_options">Zobraziť viac</string>
+    <string name="btn_less_options">Zobraziť menej</string>
+
+    <string name="label_monte_carlo">Monte Carlo simulácia</string>
+    <string name="label_inflation_clear">Úprava na infláciu</string>
+    <string name="label_tax_fees">Daňové poplatky</string>
+
+    <string name="placeholder_starting_amount">20 000 €</string>
+    <string name="placeholder_additional_contribution">1 000 €</string>
+
+    <string name="tooltip_monte_carlo">Monte Carlo simulácia je metóda, ktorá pomocou náhodných scenárov predpovedá, ako sa môže investícia vyvíjať v čase. Zohľadňuje výkyvy trhu a ukazuje rozsah možných ziskov či strát, čím pomáha lepšie pochopiť riziká a potenciál investovania.</string>
+    <string name="tooltip_inflation_clear">Nominálne výnosy mínus inflácia, pridá možnosť nastaviť infláciu (napr. 2–4 % ročne), a zobraz aj očistený reálny výnos</string>
+    <string name="tooltip_tax_fees">okrem klasického očakávaného zisku vypočíta aj mieru zdanenia akcií</string>
+
+    <string name="label_scene">Scene</string>
+    <string name="option_scene_realistic">Realistic</string>
+    <string name="option_scene_optimistic">Optimistic</string>
+    <string name="option_scene_pessimistic">Pessimistic</string>
+
+    <string name="label_inflation_percent">Inflation %</string>
+    <string name="placeholder_inflation_percent">3 %</string>
+
+    <string name="label_tax_percent">Tax %</string>
+    <string name="placeholder_tax_percent">3 %</string>
+
 </resources>
