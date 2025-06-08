@@ -46,8 +46,64 @@
     <string name="label_inflation_percent">Inflation %</string>
     <string name="placeholder_inflation_percent">3 %</string>
 
-    <string name="label_tax_percent">Tax %</string>
     <string name="placeholder_tax_percent">3 %</string>
 
 
+    <!-- Druhý pohľad -->
+        <!-- Karty / sekcie -->
+        <string name="tab_results">Results</string>
+        <string name="tab_annual_schedule">Annual Schedule</string>
+        <string name="tab_inflation">Inflation</string>
+        <string name="tab_tax">Tax</string>
+        <string name="tab_monte_carlo">Monte Carlo</string>
+
+        <!-- Hlavné štatistiky -->
+        <string name="label_end_balance">End balance</string>
+        <string name="label_total_contributions">Total Contributions</string>
+        <string name="label_total_interest">Total Interest</string>
+        <string name="label_interest_inflation">Total Interest w inflation</string>
+        <string name="label_interest_tax">Total Interest w tax</string>
+        <string name="label_success_probability">Probability of success</string>
+
+        <!-- Stĺpce v Annual Schedule -->
+        <string name="label_year">Year</string>
+        <string name="label_deposit">Deposit</string>
+        <string name="label_interest_col">Interest</string>
+        <string name="label_ending_balance">Ending balance</string>
+
+        <!-- Detail v Inflation -->
+        <string name="label_percentage">Percentage</string>
+        <string name="label_yearly_amount">Yearly</string>
+        <string name="label_total_amount">Total</string>
+        <string name="label_total_end_balance">Total end balance</string>
+
+        <!-- Detail v Tax -->
+        <string name="label_tax_percent">Tax %</string>
+        <string name="label_yearly_tax">Yearly</string>
+        <string name="label_final_tax">Total</string>
+        <string name="label_last_year">Last year</string>
+
+        <!-- Detail v Monte Carlo -->
+        <string name="label_median_end_balance">Median End Balance</string>
+        <string name="label_min_end_balance">Min End Balance</string>
+        <string name="label_max_end_balance">Max End Balance</string>
+        <string name="label_percentile">Percentile</string>
+        <string name="label_loss_probability">Probability of loss</string>
+        <string name="label_average_return">Average Annual Return</string>
+        <string name="label_std_deviation">Standard Deviation of Returns</string>
+        <string name="label_simulations">Number of Simulations</string>
+
+        <!-- Tlačidlo spodok -->
+        <string name="btn_recalculate">Re-calculate</string>
+        <string name="btn_schedule_reminder">Set reminder</string>
+
+        <!-- Pripomienka -->
+        <string name="reminder_set">Reminder Set!</string>
+        <string name="next_trigger">Next trigger: %1$s</string>
+        <string name="principal_amount">Principal: %1$s €</string>
+        <string name="contribution_yearly">Contribution: %1$s €/year</string>
+        <string name="investment_duration">Duration: %1$s years</string>
+        <string name="interest_rate">Interest Rate: %1$s %%</string>
+        <string name="repeat_interval">Repeat Interval: %1$s</string>
+        <string name="btn_ok">Okey</string>
 </resources>

@@ -2,6 +2,9 @@
 
 package com.example.ivestmentaplicationvamz.ui
 
+import InvestmentViewModel
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -36,23 +39,51 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ivestmentaplicationvamz.ui.component.RepeatInterval
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun InvestmentCalculatorScreen() {
+fun InvestmentCalculatorScreen(
+    viewModel: InvestmentViewModel = viewModel(),
+    onSchedule: (LocalDateTime) -> Unit = {},
+    onCalculate: () -> Unit
+) {
     val focusManager = LocalFocusManager.current
 
-    var startingAmount by rememberSaveable { mutableStateOf("") }
-    var additionalContribution by rememberSaveable { mutableStateOf("") }
-    var returnPercent by rememberSaveable { mutableStateOf("") }
-    var years by rememberSaveable { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    var triggerTime by remember { mutableStateOf(LocalDateTime.now()) }
 
-    val yearLabel       = stringResource(R.string.option_yearly)
-    val monthlyLabel    = stringResource(R.string.option_monthly)
+
+
+    val yearlyLabel = stringResource(R.string.option_yearly)
+
+    val startingAmountRaw by viewModel.startingAmountRaw.collectAsState()
+
+    val additionalContributionRaw by viewModel.additionalContributionRaw.collectAsState()
+
+    val yearsRaw by viewModel.yearsRaw.collectAsState()
+    val frequencyRaw by viewModel.frequencyRaw.collectAsState()
+
+    val returnPercentRaw by viewModel.returnPercentRaw.collectAsState()
+
+
+
+    val inflationRaw by viewModel.inflationRaw.collectAsState()
+
+
+    val yearLabel = stringResource(R.string.option_yearly)
+    val monthlyLabel = stringResource(R.string.option_monthly)
     val semiAnnualLabel = stringResource(R.string.option_semiannually)
-    val quarterlyLabel  = stringResource(R.string.option_quarterly)
-    val weeklyLabel     = stringResource(R.string.option_weekly)
-    val dailyLabel      = stringResource(R.string.option_daily)
+    val quarterlyLabel = stringResource(R.string.option_quarterly)
+    val weeklyLabel = stringResource(R.string.option_weekly)
+    val dailyLabel = stringResource(R.string.option_daily)
+
+    val taxPercentRaw by viewModel.taxPercentRaw.collectAsState()
 
     val compoundOptions = listOf(
         yearLabel,
@@ -62,13 +93,10 @@ fun InvestmentCalculatorScreen() {
         weeklyLabel,
         dailyLabel
     )
-    var compoundSelection by rememberSaveable { mutableStateOf(yearLabel) }
-    var compoundExpanded  by rememberSaveable { mutableStateOf(false) }
 
-    var showAdvanced    by rememberSaveable { mutableStateOf(false) }
-    var monteCarlo      by rememberSaveable { mutableStateOf(false) }
-    var inflationClear  by rememberSaveable { mutableStateOf(false) }
-    var taxFees         by rememberSaveable { mutableStateOf(false) }
+
+
+    var showAdvanced by rememberSaveable { mutableStateOf(false) }
 
     val sceneOptions = listOf(
         stringResource(R.string.option_scene_realistic),
@@ -76,22 +104,21 @@ fun InvestmentCalculatorScreen() {
         stringResource(R.string.option_scene_pessimistic)
     )
     var sceneSelection by rememberSaveable { mutableStateOf(sceneOptions.first()) }
-    var sceneExpanded  by rememberSaveable { mutableStateOf(false) }
 
-    var inflationPercent by rememberSaveable { mutableStateOf("") }
-
-    var taxPercent by rememberSaveable { mutableStateOf("") }
+    val showInflation by viewModel.showInflation.collectAsState()
+    val showTax by viewModel.showTax.collectAsState()
+    val showMonteCarlo by viewModel.showMonteCarlo.collectAsState()
 
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color    = MaterialTheme.colorScheme.background
+        color = MaterialTheme.colorScheme.background
     ) {
         val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)      // ← toto pridaj
+                .verticalScroll(scrollState)
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -101,53 +128,53 @@ fun InvestmentCalculatorScreen() {
 
             // 2) INPUT
             StyledNumberField(
-                labelRes       = R.string.label_after_years,
+                labelRes = R.string.label_after_years,
                 placeholderRes = R.string.placeholder_after_years,
-                value          = years,
-                onValueChange  = { years = it }
+                value = yearsRaw,
+                onValueChange = { viewModel.onYearsChange(it) }
             )
 
             StyledNumberField(
-                labelRes       = R.string.label_starting_amount,
+                labelRes = R.string.label_starting_amount,
                 placeholderRes = R.string.placeholder_starting_amount,
-                value          = startingAmount,
-                onValueChange  = { startingAmount = it }
+                value = startingAmountRaw,
+                onValueChange = { viewModel.onStartingAmountChange(it) }
             )
 
             StyledNumberField(
-                labelRes       = R.string.label_additional_contribution,
+                labelRes = R.string.label_additional_contribution,
                 placeholderRes = R.string.placeholder_additional_contribution,
-                value          = additionalContribution,
-                onValueChange  = { additionalContribution = it }
+                value = additionalContributionRaw,
+                onValueChange = { viewModel.onAdditionalContributionChange(it) }
             )
 
             StyledNumberField(
-                labelRes       = R.string.label_return_percent,
+                labelRes = R.string.label_return_percent,
                 placeholderRes = R.string.placeholder_return_percent,
-                value          = returnPercent,
-                onValueChange  = { returnPercent = it }
+                value = returnPercentRaw,
+                onValueChange = { viewModel.onReturnPercentChange(it) }
             )
 
 
             //SELECT
             StyledDropdownField(
-                labelRes        = R.string.label_compound,
-                options         = compoundOptions,
-                selectedOption  = compoundSelection,
-                onOptionSelected= { compoundSelection = it }
+                labelRes = R.string.label_compound,
+                options = compoundOptions,
+                selectedOption = frequencyRaw,
+                onOptionSelected = { viewModel.onFrequencyChange(it) }
             )
 
             // 4) Zobraziť VIAC
             Row(
-                modifier           = Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .clickable { showAdvanced = !showAdvanced }
                     .padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment     = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text  = if (showAdvanced)
+                    text = if (showAdvanced)
                         stringResource(R.string.btn_less_options)
                     else
                         stringResource(R.string.btn_more_options),
@@ -165,32 +192,86 @@ fun InvestmentCalculatorScreen() {
 
             // 5) ZOBRAZIŤ VIAC AKtívne
             if (showAdvanced) {
-                    AdvancedOptionsSection(
-                        monteCarlo               = monteCarlo,
-                        onMonteCarloChange       = { monteCarlo = it },
+                AdvancedOptionsSection(
+                    monteCarlo = showMonteCarlo,
+                    onMonteCarloChange = { viewModel.onMonteCarloToggle(it) },
 
-                        sceneOptions             = sceneOptions,
-                        sceneSelection           = sceneSelection,
-                        onSceneSelectionChange   = { sceneSelection = it },
+                    sceneOptions = sceneOptions,
+                    sceneSelection = sceneSelection,
+                    onSceneSelectionChange = { sceneSelection = it },
 
-                        inflationClear           = inflationClear,
-                        onInflationClearChange   = { inflationClear = it },
-                        inflationPercent         = inflationPercent,
-                        onInflationPercentChange = { inflationPercent = it },
+                    //inflácis
+                    inflationClear = showInflation,
+                    onInflationClearChange = { viewModel.onInflationToggle(it) },
+                    inflationPercent = inflationRaw,
+                    onInflationPercentChange = { viewModel.onInflationChange(it) },
 
-                        taxFees                  = taxFees,
-                        onTaxFeesChange          = { taxFees = it },
-                        taxPercent               = taxPercent,
-                        onTaxPercentChange       = { taxPercent = it }
+                    //daň
+                    taxFees = showTax,
+                    onTaxFeesChange = { viewModel.onTaxToggle(it) },
+                    taxPercent = taxPercentRaw,
+                    onTaxPercentChange = { viewModel.onTaxPercentChange(it) },
                 )
             }
 
             Spacer(Modifier.weight(1f))
 
+            val coroutineScope = rememberCoroutineScope()
+
             // 6) BUTTON
             CalculateButton {
                 focusManager.clearFocus()
-                // TODO:
+                if (showMonteCarlo) {
+                    val volPct = when (sceneSelection) {
+                        sceneOptions[0] -> 0.15
+                        sceneOptions[1] -> 0.10
+                        sceneOptions[2] -> 0.25
+                        else -> 0.15
+                    }
+                    coroutineScope.launch {
+                        viewModel.runMonteCarlo(sims = 10_000, volPct = volPct)
+                        onCalculate()
+                    }
+                } else {
+                    onCalculate()
+                }
+            }
+
+
+            OutlinedButton(onClick = {
+                focusManager.clearFocus()
+
+                triggerTime = LocalDateTime.now().plusSeconds(10)
+
+                val interval = when (frequencyRaw) {
+                    dailyLabel -> RepeatInterval.DAILY
+                    weeklyLabel -> RepeatInterval.WEEKLY
+                    monthlyLabel -> RepeatInterval.MONTHLY
+                    yearlyLabel -> RepeatInterval.YEARLY
+                    else -> RepeatInterval.DAILY
+                }
+
+                viewModel.scheduleReminder(
+                    dateTime       = triggerTime,
+                    interval       = interval,
+                    principal      = startingAmountRaw,
+                    contribution   = additionalContributionRaw,
+                    years          = yearsRaw,
+                    rate           = returnPercentRaw,
+                    frequencyLabel = frequencyRaw
+                )
+
+                showDialog = true
+            }) {
+                Text(stringResource(R.string.btn_schedule_reminder))
+            }
+
+            if (showDialog) {
+                ShowReminderDialog(
+                    triggerTime = triggerTime,
+                    onDismiss = { showDialog = false },
+                    viewModel   = viewModel
+                )
             }
         }
     }
@@ -233,26 +314,26 @@ fun InvestmentCalculatorHeader() {
     ) {
         Column {
             Text(
-                text      = stringResource(R.string.header_investment),
-                style     = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize   = 45.sp,
+                text = stringResource(R.string.header_investment),
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontSize = 45.sp,
                     fontWeight = FontWeight.Normal
                 ),
-                color     = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text      = stringResource(R.string.header_calculator),
-                style     = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize   = 42.sp,
+                text = stringResource(R.string.header_calculator),
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontSize = 42.sp,
                     fontWeight = FontWeight.Bold
                 ),
-                color     = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary
             )
         }
         Image(
-            painter            = painterResource(R.drawable.obrazok),
+            painter = painterResource(R.drawable.obrazok),
             contentDescription = null,
-            modifier           = Modifier.size(126.dp)
+            modifier = Modifier.size(126.dp)
         )
     }
 }
@@ -280,10 +361,6 @@ fun AdvancedOptionsSection(
     var showInflationDialog by remember { mutableStateOf(false) }
     var showTaxDialog       by remember { mutableStateOf(false) }
 
-    var inflationPercent by rememberSaveable { mutableStateOf("") }
-    var taxPercent       by rememberSaveable { mutableStateOf("") }
-
-
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = monteCarlo, onCheckedChange = onMonteCarloChange)
@@ -304,7 +381,7 @@ fun AdvancedOptionsSection(
                 text = { Text(stringResource(R.string.tooltip_monte_carlo)) },
                 confirmButton = {
                     TextButton(onClick = { showMonteDialog = false }) {
-                        Text("OK")
+                        Text(stringResource(R.string.btn_ok))
                     }
                 }
             )
@@ -345,22 +422,20 @@ fun AdvancedOptionsSection(
                 text = { Text(stringResource(R.string.tooltip_inflation_clear)) },
                 confirmButton = {
                     TextButton(onClick = { showInflationDialog = false }) {
-                        Text("OK")
+                        Text(stringResource(R.string.btn_ok))
                     }
                 }
             )
         }
 
         if (inflationClear) {
-            if (inflationClear) {
                 Spacer(Modifier.height(12.dp))
                 StyledNumberField(
                     labelRes        = R.string.label_inflation_percent,
                     placeholderRes  = R.string.placeholder_inflation_percent,
                     value           = inflationPercent,
-                    onValueChange   = { inflationPercent = it }
+                    onValueChange   = onInflationPercentChange
                 )
-            }
             Spacer(Modifier.height(6.dp))
         }
 
@@ -392,7 +467,7 @@ fun AdvancedOptionsSection(
                 text = { Text(stringResource(R.string.tooltip_tax_fees)) },
                 confirmButton = {
                     TextButton(onClick = { showTaxDialog = false }) {
-                        Text("OK")
+                        Text(stringResource(R.string.btn_ok))
                     }
                 }
             )
@@ -400,18 +475,16 @@ fun AdvancedOptionsSection(
 
 
         if (taxFees) {
-
-            if (taxFees) {
                 Spacer(Modifier.height(12.dp))
                 StyledNumberField(
                     labelRes        = R.string.label_tax_percent,
                     placeholderRes  = R.string.placeholder_tax_percent,
                     value           = taxPercent,
-                    onValueChange   = { taxPercent = it }
+                    onValueChange   = onTaxPercentChange
                 )
             }
             Spacer(Modifier.height(6.dp))
-        }
+
     }
 }
 
@@ -434,10 +507,8 @@ fun StyledNumberField(
         OutlinedTextField(
             value         = value,
             onValueChange = { new ->
-
-                if (new.all(Char::isDigit)) {
-                    onValueChange(new)
-                }
+                val filtered = new.filter { it.isDigit() || it == ',' || it == '.' }
+                onValueChange(filtered)
             },
             placeholder = {
                 Text(
@@ -446,7 +517,7 @@ fun StyledNumberField(
                 )
             },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             shape    = RoundedCornerShape(16.dp),
             colors   = TextFieldDefaults.outlinedTextFieldColors(
                 containerColor       = Color(0xFFF8FAFF),
@@ -517,4 +588,40 @@ fun StyledDropdownField(
             }
         }
     }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun ShowReminderDialog(
+    triggerTime: LocalDateTime,
+    onDismiss: () -> Unit,
+    viewModel: InvestmentViewModel
+) {
+    val princ by viewModel.startingAmountRaw.collectAsState()
+    val contrib by viewModel.additionalContributionRaw.collectAsState()
+    val yrs by viewModel.yearsRaw.collectAsState()
+    val rate by viewModel.returnPercentRaw.collectAsState()
+    val freqLbl by viewModel.frequencyRaw.collectAsState()
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.reminder_set)) },
+        text = {
+            Column {
+                Text(stringResource(R.string.next_trigger, triggerTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))))
+                Spacer(Modifier.height(8.dp))
+                Text(stringResource(R.string.principal_amount, princ))
+                Text(stringResource(R.string.contribution_yearly, contrib))
+                Text(stringResource(R.string.investment_duration, yrs))
+                Text(stringResource(R.string.interest_rate, rate))
+                Text(stringResource(R.string.repeat_interval, freqLbl))
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.btn_ok))
+            }
+        }
+    )
 }

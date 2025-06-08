@@ -43,7 +43,64 @@
     <string name="label_inflation_percent">Inflation %</string>
     <string name="placeholder_inflation_percent">3 %</string>
 
-    <string name="label_tax_percent">Tax %</string>
     <string name="placeholder_tax_percent">3 %</string>
 
+    <!-- Druhý pohľad -->
+    <!-- Karty / sekcie -->
+    <string name="tab_results">Výsledky</string>
+    <string name="tab_annual_schedule">Ročný rozvrh</string>
+    <string name="tab_inflation">Inflácia</string>
+    <string name="tab_tax">Daň</string>
+    <string name="tab_monte_carlo">Monte Carlo</string>
+
+    <!-- Hlavné štatistiky -->
+    <string name="label_end_balance">Konečný zostatok</string>
+    <string name="label_total_contributions">Celkové príspevky</string>
+    <string name="label_total_interest">Celkový úrok</string>
+    <string name="label_interest_inflation">Celkový úrok vrátane inflácie</string>
+    <string name="label_interest_tax">Celkový úrok po zdanení</string>
+    <string name="label_success_probability">Pravdepodobnosť úspechu</string>
+
+    <!-- Stĺpce v Annual Schedule -->
+    <string name="label_year">Rok</string>
+    <string name="label_deposit">Vklad</string>
+    <string name="label_interest_col">Úrok</string>
+    <string name="label_ending_balance">Konečný zostatok</string>
+
+    <!-- Detail v Inflation -->
+    <string name="label_percentage">Percento</string>
+    <string name="label_yearly_amount">Ročne</string>
+    <string name="label_total_amount">Celkom</string>
+    <string name="label_total_end_balance">Celkový konečný zostatok</string>
+
+    <!-- Detail v Tax -->
+    <string name="label_tax_percent">Daň %</string>
+    <string name="label_yearly_tax">Ročne</string>
+    <string name="label_final_tax">Celkovo</string>
+    <string name="label_last_year">Minulý rok</string>
+
+    <!-- Detail v Monte Carlo -->
+    <string name="label_median_end_balance">Medián konečného zostatku</string>
+    <string name="label_min_end_balance">Minimálny konečný zostatok</string>
+    <string name="label_max_end_balance">Maximálny konečný zostatok</string>
+    <string name="label_percentile">Percentil</string>
+    <string name="label_loss_probability">Pravdepodobnosť straty</string>
+    <string name="label_average_return">Priemerný ročný výnos</string>
+    <string name="label_std_deviation">Štandardná odchýlka výnosov</string>
+    <string name="label_simulations">Počet simulácií</string>
+
+
+    <!-- Tlačidlo spodok -->
+    <string name="btn_recalculate">Prepočítať</string>
+    <string name="btn_schedule_reminder">Nastaviť pripomienky</string>
+    <string name="btn_ok">Dobre</string>
+
+    <!-- Pripomienka -->
+    <string name="reminder_set">Pripomienka nastavená!</string>
+    <string name="next_trigger">Najbližšie: %1$s</string>
+    <string name="principal_amount">Vklad: %1$s €</string>
+    <string name="contribution_yearly">Príspevok: %1$s €/rok</string>
+    <string name="investment_duration">Na %1$s rokov</string>
+    <string name="interest_rate">Úrok: %1$s %%</string>
+    <string name="repeat_interval">Opakovanie: %1$s</string>
 </resources>
