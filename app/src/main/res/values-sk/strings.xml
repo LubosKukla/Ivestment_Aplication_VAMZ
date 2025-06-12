@@ -103,4 +103,26 @@
     <string name="investment_duration">Na %1$s rokov</string>
     <string name="interest_rate">Úrok: %1$s %%</string>
     <string name="repeat_interval">Opakovanie: %1$s</string>
+
+    <string name="btn_next">Ďalej</string>
+    <string name="btn_back">Spať</string>
+
+    <!-- Vstupné parametre -->
+    <string name="info_years">Dĺžka investície: %1$s rokov</string>
+    <string name="info_principal">Počiatočný vklad: %1$s</string>
+    <string name="info_contribution">Príspevok: %1$s</string>
+    <string name="info_return_rate">Očakávaný výnos: %1$s%%</string>
+    <string name="info_frequency">Frekvencia príspevkov: %1$s</string>
+
+    <!-- Rozšírené možnosti -->
+    <string name="info_simulation">Monte Carlo simulácia: %1$s</string>
+    <string name="info_inflation_enabled">Zohľadniť infláciu: %1$s</string>
+    <string name="info_inflation_rate">Inflácia: %1$s%%</string>
+    <string name="info_tax_enabled">Zdaňovať úrok: %1$s</string>
+    <string name="info_tax_rate">Daňová sadzba: %1$s%%</string>
+
+    <!-- Áno/Nie -->
+    <string name="option_yes">Áno</string>
+    <string name="option_no">Nie</string>
+    <string name="logo_desc">Logo aplikácie</string>
 </resources>

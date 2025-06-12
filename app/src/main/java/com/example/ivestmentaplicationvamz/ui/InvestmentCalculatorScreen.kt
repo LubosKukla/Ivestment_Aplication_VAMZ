@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ivestmentaplicationvamz.ui.component.HeaderLogo
 import com.example.ivestmentaplicationvamz.ui.component.RepeatInterval
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -51,7 +52,7 @@ import java.time.format.DateTimeFormatter
 fun InvestmentCalculatorScreen(
     viewModel: InvestmentViewModel = viewModel(),
     onSchedule: (LocalDateTime) -> Unit = {},
-    onCalculate: () -> Unit
+    onNext: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -123,7 +124,7 @@ fun InvestmentCalculatorScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // 1) HEADER
-            InvestmentCalculatorHeader()
+            HeaderLogo()
 
 
             // 2) INPUT
@@ -219,7 +220,7 @@ fun InvestmentCalculatorScreen(
             val coroutineScope = rememberCoroutineScope()
 
             // 6) BUTTON
-            CalculateButton {
+           /* CalculateButton {
                 focusManager.clearFocus()
                 if (showMonteCarlo) {
                     val volPct = when (sceneSelection) {
@@ -235,8 +236,40 @@ fun InvestmentCalculatorScreen(
                 } else {
                     onCalculate()
                 }
-            }
+            }*/
 
+            OutlinedButton(
+                onClick = {
+                    focusManager.clearFocus()
+                    if (showMonteCarlo) {
+                        // vyber volatilitu
+                        val volPct = when (sceneSelection) {
+                            sceneOptions[0] -> 0.15
+                            sceneOptions[1] -> 0.10
+                            sceneOptions[2] -> 0.25
+                            else -> 0.15
+                        }
+                        // spusti Monte Carlo a až potom naviguj
+                        coroutineScope.launch {
+                            viewModel.runMonteCarlo(sims = 10_000, volPct = volPct)
+                            onNext()
+                        }
+                    } else {
+                        // bez Monte Carla rovno naviguj
+                        onNext()
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(24.dp),
+                border = BorderStroke(2.dp, Color(0xFF1B1464))
+            ) {
+                Text(
+                    text = stringResource(R.string.btn_next),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
 
             OutlinedButton(onClick = {
                 focusManager.clearFocus()
@@ -303,40 +336,6 @@ fun CalculateButton(onClick: () -> Unit) {
     }
 }
 
-@Composable
-fun InvestmentCalculatorHeader() {
-    Row(
-        modifier             = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 24.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment     = Alignment.CenterVertically
-    ) {
-        Column {
-            Text(
-                text = stringResource(R.string.header_investment),
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 45.sp,
-                    fontWeight = FontWeight.Normal
-                ),
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = stringResource(R.string.header_calculator),
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontSize = 42.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-        Image(
-            painter = painterResource(R.drawable.obrazok),
-            contentDescription = null,
-            modifier = Modifier.size(126.dp)
-        )
-    }
-}
 
 @Composable
 fun AdvancedOptionsSection(

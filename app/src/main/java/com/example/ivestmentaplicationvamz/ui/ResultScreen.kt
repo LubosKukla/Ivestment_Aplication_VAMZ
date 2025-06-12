@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.example.ivestmentaplicationvamz.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.collectAsState
+import com.example.ivestmentaplicationvamz.ui.component.HeaderLogo
 
 @Composable
 fun ResultScreen(
@@ -89,7 +90,7 @@ fun ResultScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // header rovnaký ako na vstupnej obrazovke
-            InvestmentCalculatorHeader()
+            HeaderLogo()
 
             // 1) Výsledky
             ExpandableSection(titleRes = R.string.tab_results) {
