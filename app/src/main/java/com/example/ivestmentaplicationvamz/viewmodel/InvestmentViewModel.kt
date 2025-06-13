@@ -33,8 +33,6 @@ import kotlinx.coroutines.withContext
 
 class InvestmentViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val dao = AppDatabase.getInstance(application).investmentDao()
-
 
 
     // —————————————————————————————————————————————————————————
@@ -714,25 +712,8 @@ class InvestmentViewModel(application: Application) : AndroidViewModel(applicati
 
     }
 
-    //práca z databázov
 
-    suspend fun saveToDbSuspend(entity: InvestmentEntity): Long {
-        return dao.insert(entity)
-    }
-
-    val allInvestments: StateFlow<List<InvestmentEntity>> =
-        dao.getAll()
-            .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
-    fun deleteInvestment(entity: InvestmentEntity, onComplete: (Int) -> Unit = {}) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val count = dao.delete(entity)
-            withContext(Dispatchers.Main) {
-                onComplete(count)
-            }
-        }
-    }
-
+    //načítavanie dát z databázy do aktuálnich častí
     fun loadIntoInputs(entity: InvestmentEntity) {
         _startingAmountRaw.value = entity.principal.toString()
         _additionalContributionRaw.value = entity.contribution.toString()

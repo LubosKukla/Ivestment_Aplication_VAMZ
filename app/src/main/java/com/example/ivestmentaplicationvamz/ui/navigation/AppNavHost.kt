@@ -13,12 +13,14 @@ import com.example.ivestmentaplicationvamz.ui.ResultScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ivestmentaplicationvamz.ui.AdditionalInfoScreen
 import com.example.ivestmentaplicationvamz.ui.HistoryScreen
+import com.example.ivestmentaplicationvamz.viewmodel.InvestmentDataViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
-    viewModel: InvestmentViewModel = viewModel()
+    viewModel: InvestmentViewModel = viewModel(),
+    dataViewModel: InvestmentDataViewModel = viewModel()
 ) {
     NavHost(
         navController = navController,
@@ -27,6 +29,7 @@ fun AppNavHost(
         composable("calculator") {
             InvestmentCalculatorScreen(
                 viewModel = viewModel,
+                dataViewModel  = dataViewModel,
                 onNext    = { navController.navigate("info") },
                 onHistory = { navController.navigate("history") }
             )
@@ -45,6 +48,7 @@ fun AppNavHost(
         composable("history") {
             HistoryScreen(
                 viewModel      = viewModel,
+                dataViewModel  = dataViewModel,
                 onBack         = { navController.popBackStack() },
                 onLoadAndBack  = { navController.popBackStack() }
             )

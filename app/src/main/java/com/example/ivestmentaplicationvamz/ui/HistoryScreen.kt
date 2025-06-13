@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ivestmentaplicationvamz.R
 import com.example.ivestmentaplicationvamz.data.InvestmentEntity
+import com.example.ivestmentaplicationvamz.viewmodel.InvestmentDataViewModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -21,10 +22,11 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HistoryScreen(
     viewModel: InvestmentViewModel = viewModel(),
+    dataViewModel: InvestmentDataViewModel  = viewModel(),
     onBack: () -> Unit,
     onLoadAndBack: () -> Unit
 ) {
-    val investments by viewModel.allInvestments.collectAsState()
+    val investments by dataViewModel.allInvestments.collectAsState()
 
     var showDeletedDialog by remember { mutableStateOf(false) }
 
@@ -71,7 +73,7 @@ fun HistoryScreen(
                                 Text(text = stringResource(R.string.btn_load))
                             }
                             Button(onClick = {
-                                viewModel.deleteInvestment(inv) {
+                                dataViewModel.delete(inv) {
                                     showDeletedDialog = true
                                 }
                             }) {

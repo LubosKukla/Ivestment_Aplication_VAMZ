@@ -45,6 +45,7 @@ import androidx.media3.common.util.UnstableApi
 import com.example.ivestmentaplicationvamz.data.InvestmentEntity
 import com.example.ivestmentaplicationvamz.ui.component.HeaderLogo
 import com.example.ivestmentaplicationvamz.ui.component.RepeatInterval
+import com.example.ivestmentaplicationvamz.viewmodel.InvestmentDataViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,6 +58,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun InvestmentCalculatorScreen(
     viewModel: InvestmentViewModel = viewModel(),
+    dataViewModel: InvestmentDataViewModel,
     onSchedule: (LocalDateTime) -> Unit = {},
     onNext: () -> Unit,
     onHistory: () -> Unit
@@ -266,10 +268,9 @@ fun InvestmentCalculatorScreen(
                 onClick = {
                     focusManager.clearFocus()
                     coroutineScope.launch {
-                        // 1) zostavíme timestamp
                         val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
 
-                        // 2) pripravíme entitu zo stavu ViewModelu
+                        // pripravíme entitu zo stavu ViewModelu
                         val entity = InvestmentEntity(
                             principal          = viewModel.startingAmountRaw.value.toDoubleOrNull() ?: 0.0,
                             contribution       = viewModel.additionalContributionRaw.value.toDoubleOrNull() ?: 0.0,
@@ -284,15 +285,14 @@ fun InvestmentCalculatorScreen(
                             taxRate            = viewModel.taxPercentRaw.value.toDoubleOrNull()
                         )
 
-                        // 3) uložíme do databázy
+                        // uložíme do databázy
                         val newId = withContext(Dispatchers.IO) {
-                            viewModel.saveToDbSuspend(entity)
+                            dataViewModel.insert(entity)
                         }
-                        Log.d("DB", "✅ Uložené id=$newId")
+                        Log.d("DB", "Uložené id=$newId")
 
-                        // 4) spustíme Monte Carlo (ak treba) a až potom navigujeme
+                        // spustíme Monte Carlo (ak treba) a až potom navigujeme
                         if (showMonteCarlo) {
-                            // vypočítame volPct z výberu
                             val volPct = when (sceneSelection) {
                                 sceneOptions[0] -> 0.15
                                 sceneOptions[1] -> 0.10
@@ -302,7 +302,6 @@ fun InvestmentCalculatorScreen(
                             viewModel.runMonteCarlo(sims = 10_000, volPct = volPct)
                         }
 
-                        // 5) navigácia ďalej
                         onNext()
                     }
                 },
