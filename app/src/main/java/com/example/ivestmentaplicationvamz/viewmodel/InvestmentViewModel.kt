@@ -27,10 +27,17 @@ import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import com.example.ivestmentaplicationvamz.R
+import com.example.ivestmentaplicationvamz.data.InvestmentEntity
+import com.example.ivestmentaplicationvamz.data.AppDatabase
+import kotlinx.coroutines.withContext
 
 class InvestmentViewModel(application: Application) : AndroidViewModel(application) {
 
-            // —————————————————————————————————————————————————————————
+    private val dao = AppDatabase.getInstance(application).investmentDao()
+
+
+
+    // —————————————————————————————————————————————————————————
             // Počet rokov
             // —————————————————————————————————————————————————————————
             private val _yearsRaw = MutableStateFlow("")
@@ -705,6 +712,39 @@ class InvestmentViewModel(application: Application) : AndroidViewModel(applicati
             )
         }
 
+    }
+
+    //práca z databázov
+
+    suspend fun saveToDbSuspend(entity: InvestmentEntity): Long {
+        return dao.insert(entity)
+    }
+
+    val allInvestments: StateFlow<List<InvestmentEntity>> =
+        dao.getAll()
+            .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    fun deleteInvestment(entity: InvestmentEntity, onComplete: (Int) -> Unit = {}) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val count = dao.delete(entity)
+            withContext(Dispatchers.Main) {
+                onComplete(count)
+            }
+        }
+    }
+
+    fun loadIntoInputs(entity: InvestmentEntity) {
+        _startingAmountRaw.value = entity.principal.toString()
+        _additionalContributionRaw.value = entity.contribution.toString()
+        _yearsRaw.value = entity.years.toString()
+        _returnPercentRaw.value = entity.ratePercent.toString()
+        _frequencyRaw.value = entity.frequency
+
+        _showMonteCarlo.value = entity.simulationEnabled
+        _showInflation.value = entity.inflationEnabled
+        _inflationRaw.value = entity.inflationRate?.toString() ?: ""
+        _showTax.value = entity.taxEnabled
+        _taxPercentRaw.value = entity.taxRate?.toString() ?: ""
     }
 }
 

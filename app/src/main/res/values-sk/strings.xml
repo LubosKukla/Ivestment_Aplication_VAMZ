@@ -125,4 +125,26 @@
     <string name="option_yes">Áno</string>
     <string name="option_no">Nie</string>
     <string name="logo_desc">Logo aplikácie</string>
+
+    <!-- HistoryScreen -->
+    <string name="history_title">História investícií</string>
+    <string name="cd_back">Späť</string>
+    <string name="btn_history">História</string>
+    <string name="deleted_title">Úspech</string>
+    <string name="deleted_message">Investícia bola úspešne vymazaná.</string>
+    <string name="ok">OK</string>
+
+
+    <!-- Polia v kartách -->
+    <string name="history_principal">Vklad: %1$s</string>
+    <string name="history_contribution">Príspevok: %1$s</string>
+    <string name="history_years">Dĺžka: %1$s rokov</string>
+    <string name="history_rate">Ročný výnos: %1$s%%</string>
+    <string name="history_frequency">Frekvencia: %1$s</string>
+    <string name="history_savedAt">Uložené: %1$s</string>
+
+    <!-- Tlačidlá -->
+    <string name="btn_load">Načítať</string>
+    <string name="btn_delete">Vymazať</string>
+
 </resources>

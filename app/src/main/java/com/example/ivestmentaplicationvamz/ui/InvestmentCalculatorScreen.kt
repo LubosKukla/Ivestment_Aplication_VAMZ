@@ -40,19 +40,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.util.Log
+import androidx.media3.common.util.UnstableApi
+import com.example.ivestmentaplicationvamz.data.InvestmentEntity
 import com.example.ivestmentaplicationvamz.ui.component.HeaderLogo
 import com.example.ivestmentaplicationvamz.ui.component.RepeatInterval
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InvestmentCalculatorScreen(
     viewModel: InvestmentViewModel = viewModel(),
     onSchedule: (LocalDateTime) -> Unit = {},
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    onHistory: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -99,6 +106,16 @@ fun InvestmentCalculatorScreen(
 
     var showAdvanced by rememberSaveable { mutableStateOf(false) }
 
+    val showInflation by viewModel.showInflation.collectAsState()
+    val showTax by viewModel.showTax.collectAsState()
+    val showMonteCarlo by viewModel.showMonteCarlo.collectAsState()
+
+    LaunchedEffect(showMonteCarlo, showInflation, showTax) {
+        if (showMonteCarlo || showInflation || showTax) {
+            showAdvanced = true
+        }
+    }
+
     val sceneOptions = listOf(
         stringResource(R.string.option_scene_realistic),
         stringResource(R.string.option_scene_optimistic),
@@ -106,9 +123,7 @@ fun InvestmentCalculatorScreen(
     )
     var sceneSelection by rememberSaveable { mutableStateOf(sceneOptions.first()) }
 
-    val showInflation by viewModel.showInflation.collectAsState()
-    val showTax by viewModel.showTax.collectAsState()
-    val showMonteCarlo by viewModel.showMonteCarlo.collectAsState()
+
 
 
     Surface(
@@ -125,6 +140,15 @@ fun InvestmentCalculatorScreen(
         ) {
             // 1) HEADER
             HeaderLogo()
+
+            TextButton(
+                onClick = onHistory,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                Text(text = stringResource(R.string.btn_history), style = MaterialTheme.typography.bodyLarge)
+            }
 
 
             // 2) INPUT
@@ -241,21 +265,44 @@ fun InvestmentCalculatorScreen(
             OutlinedButton(
                 onClick = {
                     focusManager.clearFocus()
-                    if (showMonteCarlo) {
-                        // vyber volatilitu
-                        val volPct = when (sceneSelection) {
-                            sceneOptions[0] -> 0.15
-                            sceneOptions[1] -> 0.10
-                            sceneOptions[2] -> 0.25
-                            else -> 0.15
+                    coroutineScope.launch {
+                        // 1) zostavíme timestamp
+                        val now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
+
+                        // 2) pripravíme entitu zo stavu ViewModelu
+                        val entity = InvestmentEntity(
+                            principal          = viewModel.startingAmountRaw.value.toDoubleOrNull() ?: 0.0,
+                            contribution       = viewModel.additionalContributionRaw.value.toDoubleOrNull() ?: 0.0,
+                            years              = viewModel.yearsRaw.value.toIntOrNull() ?: 0,
+                            ratePercent        = viewModel.returnPercentRaw.value.toDoubleOrNull() ?: 0.0,
+                            frequency          = viewModel.frequencyRaw.value,
+                            timestamp          = now,
+                            simulationEnabled  = viewModel.showMonteCarlo.value,
+                            inflationEnabled   = viewModel.showInflation.value,
+                            inflationRate      = viewModel.inflationRaw.value.toDoubleOrNull(),
+                            taxEnabled         = viewModel.showTax.value,
+                            taxRate            = viewModel.taxPercentRaw.value.toDoubleOrNull()
+                        )
+
+                        // 3) uložíme do databázy
+                        val newId = withContext(Dispatchers.IO) {
+                            viewModel.saveToDbSuspend(entity)
                         }
-                        // spusti Monte Carlo a až potom naviguj
-                        coroutineScope.launch {
+                        Log.d("DB", "✅ Uložené id=$newId")
+
+                        // 4) spustíme Monte Carlo (ak treba) a až potom navigujeme
+                        if (showMonteCarlo) {
+                            // vypočítame volPct z výberu
+                            val volPct = when (sceneSelection) {
+                                sceneOptions[0] -> 0.15
+                                sceneOptions[1] -> 0.10
+                                sceneOptions[2] -> 0.25
+                                else             -> 0.15
+                            }
                             viewModel.runMonteCarlo(sims = 10_000, volPct = volPct)
-                            onNext()
                         }
-                    } else {
-                        // bez Monte Carla rovno naviguj
+
+                        // 5) navigácia ďalej
                         onNext()
                     }
                 },

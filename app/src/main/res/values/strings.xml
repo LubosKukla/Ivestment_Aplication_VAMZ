@@ -128,4 +128,25 @@
     <string name="option_yes">Yes</string>
     <string name="option_no">No</string>
     <string name="logo_desc">Logo app</string>
+
+    <!-- HistoryScreen -->
+    <string name="history_title">Investment History</string>
+    <string name="cd_back">Back</string>
+    <string name="btn_history">History</string>
+    <string name="deleted_title">Success</string>
+    <string name="deleted_message">Investment was successfully deleted.</string>
+    <string name="ok">OK</string>
+
+
+    <!-- Card fields -->
+    <string name="history_principal">Principal: %1$s</string>
+    <string name="history_contribution">Contribution: %1$s</string>
+    <string name="history_years">Duration: %1$s years</string>
+    <string name="history_rate">Annual Return: %1$s%%</string>
+    <string name="history_frequency">Frequency: %1$s</string>
+    <string name="history_savedAt">Saved: %1$s</string>
+
+    <!-- Buttons -->
+    <string name="btn_load">Load</string>
+    <string name="btn_delete">Delete</string>
 </resources>
